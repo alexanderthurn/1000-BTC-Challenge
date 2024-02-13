@@ -1,4 +1,4 @@
-# BTC Challenge 1000 BTC
+# 1000 BTC Challenge
 
 A tool designed for educational purposes and brute-forcing n-bit long Bitcoin private keys, specifically crafted for the [Bitcoin puzzle transaction](https://blockchain.info/tx/08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15). This transaction initially contained 256 addresses, each progressively more challenging to decipher.
 
