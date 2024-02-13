@@ -1,5 +1,6 @@
-import sys, sched, time, datetime, math
+import sys, time, datetime, math
 import base58, binascii, hashlib
+from multiprocessing import Pool
 from ecdsa import SigningKey, SECP256k1
 from python.addresses import btcadresses
 from python.RepeatedTimer import RepeatedTimer
@@ -50,32 +51,37 @@ timeStart = time.perf_counter()
 timeEnd = time.perf_counter()
 stepwidth=10000
 
-print(f"Searching in parallel {(end-start)} {bits}bit long private keys for {public_addr_to_find} ({realstart}, {end})")
 
 def printTiming(name): 
     timeEnd = time.perf_counter()
     t = str(datetime.timedelta(seconds=math.ceil((timeEnd - timeStart))))
-    print(f"{name} {t} | {(number-start):.0f} keys | {100*(number-start)/(end-start):.0f} % | {0.000001*(number-start)/(timeEnd - timeStart):.3f} MKeys/sec", end="\r")
+    if (number-start > 0):
+        print(f"{name} {t} | {(number-start):.0f} keys | {100*(number-start)/(end-start):.0f} % | {0.000001*(number-start)/(timeEnd - timeStart):.3f} MKeys/sec", end="\r")
 
 rt = RepeatedTimer(1, printTiming, "")
 
-def computeBatch(s, e):
-    for n in range(s, e):
+def computeBatch(s):
+    for n in range(s, s+stepwidth):
         private_key_hex = number_to_hex_private_key(n)
         public_key_hex = hex_private_key_to_hex_public_key(private_key_hex)
         bitcoin_address = hex_public_key_to_bitcoin_address(public_key_hex)
         if (bitcoin_address == public_addr_to_find):
-            return n
-    return 0
+            return s, n
+    return s, 0
 
 try:
-    for number in range(realstart, end, stepwidth):
-        result = computeBatch(number, number+stepwidth)
-        if (result > 0):
-            break
-
+    with Pool() as pool: 
+        print(f"Searching in parallel {(end-start)} {bits}bit long private keys for {public_addr_to_find} ({realstart}, {end})")
+        print(f"Processes: {pool._processes}")
+        for r in pool.imap(computeBatch, range(realstart, end, stepwidth)):
+            if (r[0] > 0):
+                number = r[0]
+            if (r[1] > 0):
+                result = r[1]
+                break
 
 except (Exception, KeyboardInterrupt):
+    pool.terminate()
     print("")
     print("--------------------------------")
     print("Aborted")
@@ -85,6 +91,9 @@ except (Exception, KeyboardInterrupt):
 
 rt.stop()
 printTiming('Total')
+
+
+
 private_key_hex = number_to_hex_private_key(result)
 public_key_hex = hex_private_key_to_hex_public_key(private_key_hex)
 bitcoin_address = hex_public_key_to_bitcoin_address(public_key_hex)

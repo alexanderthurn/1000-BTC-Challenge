@@ -126,9 +126,60 @@ python3 src/01_measure.py 21 1101338
 Searching 1048576 21bit long private keys for 14oFNXucftsHiUMY8uctg6N487riuyXs4h (1101338, 2097152)
 ```
 
-## (TODO) Approach 3 - Parallelization
+## Approach 3 - Python Parallelization
 
 This approach leverages parallel computing techniques to significantly enhance the speed of the key search process. By distributing the workload across multiple processors or threads, it aims to improve efficiency and reduce the time required to find a matching key.
+
+
+```
+python3 src/02_parallel.py 22
+```
+
+```
+Searching in parallel 2097152 22bit long private keys for 1CfZWK1QTQE3eS9qn61dQjV89KDjZzfNcv (2097152, 4194304)
+Processes: 32
+Total 0:00:05 | 910000 keys | 43 % | 0.226 MKeys/sec
+--------------------------------
+Congratulations - Private Key found
+Private Key (Decimal): 3007503
+Private Key (HEX): 2de40f
+Private Key (WIF): KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rP9Ja2dhtxoh
+Public Key (HEX): 023ed96b524db5ff4fe007ce730366052b7c511dc566227d929070b9ce917abb43
+Public Key (BTC Address): 1CfZWK1QTQE3eS9qn61dQjV89KDjZzfNcv
+Bits: 22
+--------------------------------
+```
+
+
+### Comparison
+
+22 Bit challenge:
+
+|Approach|Result| 
+|---|---|
+|Simple Parallel (Python)|0.226 MKeys/sec| 
+|Non-Parallel|0.016 MKeys/sec| 
+
+
+
+```
+python3 src/01_measure.py 22
+Searching 2097152 22bit long private keys for 1CfZWK1QTQE3eS9qn61dQjV89KDjZzfNcv (2097152, 4194304)
+Total 0:00:57 | 910351 keys | 43 % | 0.016 MKeys/sec
+--------------------------------
+Congratulations - Private Key found
+Private Key (Decimal): 3007503
+Private Key (HEX): 2de40f
+Private Key (WIF): KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rP9Ja2dhtxoh
+Public Key (HEX): 023ed96b524db5ff4fe007ce730366052b7c511dc566227d929070b9ce917abb43
+Public Key (BTC Address): 1CfZWK1QTQE3eS9qn61dQjV89KDjZzfNcv
+Bits: 22
+--------------------------------
+```
+
+
+
+
 
 ## (TODO) Approach 4 - C Code simple
 

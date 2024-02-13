@@ -1,4 +1,4 @@
-import sys, sched, time, datetime, math
+import sys, time, datetime, math
 import base58, binascii, hashlib
 from ecdsa import SigningKey, SECP256k1
 from python.addresses import btcadresses
