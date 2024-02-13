@@ -6,6 +6,16 @@ from python.addresses import btcadresses
 from python.RepeatedTimer import RepeatedTimer
 from python.common import decimal_to_wif, number_to_hex_private_key, hex_private_key_to_hex_public_key, hex_public_key_to_bitcoin_address
 
+
+def number_to_bitcoin_address_b58decoded(number):
+    sk = SigningKey.from_secret_exponent(number, curve=SECP256k1)
+    sha256_hash = hashlib.sha256(sk.verifying_key.to_string("compressed")).digest()
+    ripemd160_hash = hashlib.new('ripemd160')
+    ripemd160_hash.update(sha256_hash)
+    network_and_ripemd160 = b'\x00' + ripemd160_hash.digest()
+    double_sha256 = hashlib.sha256(hashlib.sha256(network_and_ripemd160).digest()).digest()
+    return network_and_ripemd160 + double_sha256[:4]
+
 if (len(sys.argv) < 2):
     print("Missing parameter [amount of Bits (1-256)]")
     print("e.g. 'python3 01_measure.py 17'")
@@ -13,6 +23,7 @@ if (len(sys.argv) < 2):
 
 bits = int(sys.argv[1])
 public_addr_to_find = btcadresses[bits]
+public_addr_to_find_b58decoded = base58.b58decode(public_addr_to_find)
 start = pow(2,bits-1)
 realstart = start
 if (len(sys.argv) > 2):
@@ -22,10 +33,11 @@ number = 0
 result = 0
 public_key_hex =""
 bitcoin_address = ""
+
+
 timeStart = time.perf_counter()
 timeEnd = time.perf_counter()
 stepwidth=10000
-
 
 def printTiming(name): 
     timeEnd = time.perf_counter()
@@ -37,10 +49,8 @@ rt = RepeatedTimer(1, printTiming, "")
 
 def computeBatch(s):
     for n in range(s, s+stepwidth):
-        private_key_hex = number_to_hex_private_key(n)
-        public_key_hex = hex_private_key_to_hex_public_key(private_key_hex)
-        bitcoin_address = hex_public_key_to_bitcoin_address(public_key_hex)
-        if (bitcoin_address == public_addr_to_find):
+        bitcoin_address_b58decoded=number_to_bitcoin_address_b58decoded(n)
+        if (bitcoin_address_b58decoded == public_addr_to_find_b58decoded):
             return s, n
     return s, 0
 

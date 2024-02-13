@@ -3,32 +3,7 @@ import base58, binascii, hashlib
 from ecdsa import SigningKey, SECP256k1
 from python.addresses import btcadresses
 from python.RepeatedTimer import RepeatedTimer
-from python.common import decimal_to_wif
-
-def number_to_hex_private_key(number):
-    hex_string = hex(number)[2:]
-    hex_string_padded = hex_string.zfill(64)
-    return hex_string_padded
-
-def hex_private_key_to_hex_public_key(hex_private_key):
-    private_key_bytes = binascii.unhexlify(hex_private_key)
-    sk = SigningKey.from_string(private_key_bytes, curve=SECP256k1)
-    vk = sk.verifying_key
-    public_key_hex = binascii.hexlify(vk.to_string("compressed")).decode("utf-8")
-    return public_key_hex
-
-def hex_public_key_to_bitcoin_address(public_key_hex):
-    public_key_bytes = binascii.unhexlify(public_key_hex)
-    sha256_hash = hashlib.sha256(public_key_bytes).digest()
-    ripemd160_hash = hashlib.new('ripemd160')
-    ripemd160_hash.update(sha256_hash)
-    network_byte = b'\x00'
-    network_and_ripemd160 = network_byte + ripemd160_hash.digest()
-    double_sha256 = hashlib.sha256(hashlib.sha256(network_and_ripemd160).digest()).digest()
-    checksum = double_sha256[:4]
-    binary_address = network_and_ripemd160 + checksum
-    bitcoin_address = base58.b58encode(binary_address).decode('utf-8')
-    return bitcoin_address
+from python.common import decimal_to_wif, number_to_hex_private_key, hex_private_key_to_hex_public_key, hex_public_key_to_bitcoin_address
 
 if (len(sys.argv) < 2):
     print("Missing parameter [amount of Bits (1-256)]")
