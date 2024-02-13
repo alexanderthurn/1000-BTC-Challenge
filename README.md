@@ -140,10 +140,13 @@ On my machine, 32 processes were created. The parallel method was 14 times faste
 
 22 Bit challenge:
 
-|Approach|Result| 
-|---|---|
-|Parallel (Python)|0.226 MKeys/sec| 
-|Non-Parallel (Python)|0.016 MKeys/sec| 
+|Approach|Language|Result| 
+|---|---|---|
+|Parallel imap |Python|0.226 MKeys/sec| 
+|Parallel imap_unordered |Python|0.249 MKeys/sec| 
+|Non-Parallel |Python|0.016 MKeys/sec| 
+
+
 
 
 ```

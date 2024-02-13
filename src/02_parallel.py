@@ -73,7 +73,7 @@ try:
     with Pool() as pool: 
         print(f"Searching in parallel {(end-start)} {bits}bit long private keys for {public_addr_to_find} ({realstart}, {end})")
         print(f"Processes: {pool._processes}")
-        for r in pool.imap(computeBatch, range(realstart, end, stepwidth)):
+        for r in pool.imap_unordered(computeBatch, range(realstart, end, stepwidth)):
             if (r[0] > 0):
                 number = r[0]
             if (r[1] > 0):
