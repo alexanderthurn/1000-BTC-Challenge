@@ -164,9 +164,21 @@ Bits: 22
 --------------------------------
 ```
 
-## (TODO) Approach 5 - C Code simple
+## Approach 5 - C Code simple
 
 This method involves implementing the algorithm in C, a low-level programming language known for its speed and efficiency. The simplicity of the code focuses on straightforward implementation without parallelization, offering improved performance over Python-based methods due to the compiled nature of C.
+
+Prerequisites: Make sure you have gcc. Should be preinstalled on bash/wsh. For Windows: Install gcc with Cygwin [cygwin](https://sourceware.org/cygwin/)
+
+Bash:
+```
+gcc src/04_simple.c src/c/addresses.c src/c/common.c -I src/c -o out/04_simple && out/04_simple
+```
+
+Windows:
+```
+gcc src\04_simple.c src\c\addresses.c src\c\common.c -I src\c -o out\04_simple && out\04_simple
+```
 
 ## (TODO) Approach 6 - C Code Parallelization
 
