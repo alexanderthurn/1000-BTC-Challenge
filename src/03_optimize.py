@@ -72,9 +72,8 @@ def computeBatch(s):
             
     return s, 0
 
-
-with Pool() as pool: 
-    try:
+try:
+    with Pool() as pool: 
         print(f"Searching in parallel and optimized {(end-start)} {bits}bit long private keys for {public_addr_to_find} ({realstart}, {end})")
         print(f"Processes: {pool._processes}")
         for r in pool.imap_unordered(computeBatch, range(realstart, end, stepwidth)):
@@ -83,14 +82,13 @@ with Pool() as pool:
                 result = r[1]
                 pool.close()
                 break
-    except (Exception, KeyboardInterrupt):
-        pool.close()
-        rt.stop()
-        print("")
-        print("--------------------------------")
-        print("Aborted")
-        print(f"To resume: 'python3 src/01_measure.py {bits} {number}'")
-        exit()
+except (Exception, KeyboardInterrupt):
+    rt.stop()
+    print("")
+    print("--------------------------------")
+    print("Aborted")
+    print(f"To resume: 'python3 src/01_measure.py {bits} {number}'")
+    exit()
 
 
 

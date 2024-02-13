@@ -53,11 +53,12 @@ If you're considering tackling this challenge independently, be aware that it co
 
 This project is meant to get the concept of the challenge and trying to increase the performance step by step. It incorporates a variety of techniques:
 
-* It starts with a foundational Python-based approach (Approach 1), which, while easy to understand, is slow! This method is intended to help you to get the basics.
-* The next technique (Approach 2) adds complexity by monitoring computation time and allowing for the continuation of calculations. It also prints out some useful information (WIF key and so on)
-* The third technique (Approach 3) leverages parallelization to enhance efficiency.
-* Future enhancements include developing a version in C to improve performance.
-* Additionally, a GPU-accelerated version is planned to further expedite the computation process.
+* It starts with a foundational Python-based approach (Approach 00), which, while easy to understand, is slow! This method is intended to help you to get the basics.
+* The next technique (Approach 01) adds complexity by monitoring computation time and allowing for the continuation of calculations. It also prints out some useful information (WIF key and so on)
+* The next technique (Approach 02) leverages parallelization to enhance efficiency.
+* The next one (Approach 03) optimizes the comparison method, splitting components by RIPEMD and SHA256
+* Future enhancements include developing a version in C to improve performance
+* Additionally, a GPU-accelerated version is planned to further expedite the computation process. Python CUDA and C Cuda is on the list
 
 # Quickstart
 
@@ -175,9 +176,14 @@ Building on the fourth approach, this method adds parallelization to the C imple
 
 This approach employs CUDA (Compute Unified Device Architecture), a parallel computing platform and programming model developed by NVIDIA for general computing on graphical processing units (GPUs). By harnessing the power of GPU acceleration, this method can achieve orders of magnitude higher performance than CPU-based approaches, making it significantly faster at processing massive amounts of data, such as brute-forcing cryptographic keys.
 
+
 # Performance
 
-22 Bit challenge:
+22 Bit challenge 
+
+* AMD Ryzen 9 5950X 3,4 Ghz Base Speed L1/L2/L3: 1,8,64 MB
+* NVIDIA GeForce RTX 3080 10GB - 64GB shared
+* 128 GB RAM 2667 MHz
 
 |Approach|Description|Language|MKeys/sec| 
 |---|---|---|---|
