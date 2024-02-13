@@ -53,8 +53,8 @@ stepwidth=10000
 def printTiming(name): 
     timeEnd = time.perf_counter()
     t = str(datetime.timedelta(seconds=math.ceil((timeEnd - timeStart))))
-    if (number-start > 0):
-        print(f"{name} {t} | {(number-start):.0f} keys | {100*(number-start)/(end-start):.0f} % | {0.000001*(number-start)/(timeEnd - timeStart):.3f} MKeys/sec", end="\r")
+    if (number-realstart > 0):
+        print(f"{name} {t} | {(number-realstart):.0f} keys | {100*(number-start)/(end-start):.0f} % | {0.000001*(number-realstart)/(timeEnd - timeStart):.3f} MKeys/sec", end="\r")
 
 rt = RepeatedTimer(1, printTiming, "")
 
