@@ -3,47 +3,47 @@ from ecdsa import SigningKey, SECP256k1
 from python.addresses import btcadresses
 
 def number_to_hex_private_key(number):
-    # Konvertiere die Zahl in einen Hex-String ohne das '0x'-Präfix
+    # Convert the number to a hex string without the '0x' prefix
     hex_string = hex(number)[2:]
     
-    # Fülle den Hex-String mit führenden Nullen auf, um eine Länge von 64 Zeichen zu erreichen
+    # Pad the hex string with leading zeros to achieve a length of 64 characters
     hex_string_padded = hex_string.zfill(64)
     
     return hex_string_padded
 
 def hex_private_key_to_hex_public_key(hex_private_key):
-    # Konvertiere den Hex-String in Bytes
+    # Convert the hex string to bytes
     private_key_bytes = binascii.unhexlify(hex_private_key)
-    # Erstelle ein SigningKey-Objekt aus den Private Key Bytes
+    # Create a SigningKey object from the private key bytes
     sk = SigningKey.from_string(private_key_bytes, curve=SECP256k1)
-    # Hole den VerifyingKey (Public Key) aus dem SigningKey
+    # Get the VerifyingKey (Public Key) from the SigningKey
     vk = sk.verifying_key
-    # Konvertiere den Public Key in seine komprimierte Form als Hex-String
+    # Convert the public key to its compressed form as a hex string
     public_key_hex = binascii.hexlify(vk.to_string("compressed")).decode("utf-8")
     return public_key_hex
 
 def hex_public_key_to_bitcoin_address(public_key_hex):
     public_key_bytes = binascii.unhexlify(public_key_hex)
-    # Schritt 1: SHA-256 Hashing des Public Keys
+    # Step 1: SHA-256 hashing of the public key
     sha256_hash = hashlib.sha256(public_key_bytes).digest()
-    # Schritt 2: RIPEMD-160 Hashing des SHA-256 Hashs
+    # Step 2: RIPEMD-160 hashing of the SHA-256 hash
     ripemd160_hash = hashlib.new('ripemd160')
     ripemd160_hash.update(sha256_hash)
-    # Schritt 3: Hinzufügen des Netzwerk-Bytes
+    # Step 3: Adding the network byte
     network_byte = b'\x00'
     network_and_ripemd160 = network_byte + ripemd160_hash.digest()
-    # Schritt 4: Doppeltes SHA-256 Hashing für die Prüfsumme
+    # Step 4: Double SHA-256 hashing for the checksum
     double_sha256 = hashlib.sha256(hashlib.sha256(network_and_ripemd160).digest()).digest()
     checksum = double_sha256[:4]
-    # Schritt 5: Zusammensetzen und Base58Check-Kodierung
+    # Step 5: Assembly and Base58Check encoding
     binary_address = network_and_ripemd160 + checksum
     bitcoin_address = base58.b58encode(binary_address).decode('utf-8')
     return bitcoin_address
 
 bits = 17
 public_addr_to_find = btcadresses[bits]
-start = pow(2,bits-1)
-end = pow(2,(bits))
+start = pow(2, bits-1)
+end = pow(2, bits)
 
 print(f"Searching {bits} bit long private key for {public_addr_to_find} ({start}, {end})")
 
@@ -58,5 +58,3 @@ for number in range(start, end):
     if (bitcoin_address == public_addr_to_find):
         print(f"Private Key (Decimal): {number}")
         exit()
-
-
