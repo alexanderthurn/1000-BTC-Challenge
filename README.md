@@ -61,7 +61,7 @@ This project is meant to get the concept of the challenge and trying to increase
 
 # Quickstart
 
-## Approach 1 - Understandable code
+## Approach 00 - Understandable code
 
 The first approach stands as the simplest among the methods employed. It serves as an excellent starting point and is configured by default to solve the 17-bit challenge, provided there are no modifications to the code in line 45. Read the code and try to understand its used libraries. I know it is tough, as there are several methods used, but it is worth to use the time understand the concept. A very good source is also this article [Generate BTC Private Key Explanation](https://groups.google.com/g/comp.lang.c/c/fbLnwQRBcPU?pli=1)
 
@@ -84,27 +84,22 @@ Searching 17 bit long private key for 1HduPEXZRdG26SUT5Yk83mLkPyjnZuJ7Bm (65536,
 Private Key (Decimal): 95823
 ```
 
-## Approach 2 - Measure time and more
+## Approach 01 - Measure time and more
 
 This method focuses on measuring the duration of operations and outputs the results in a format that can be readily utilized in your wallet. It requires you to specify the number of bits you wish to search for. Using this method, the performance achieved was 0.016 MKeys/sec, which is minimal when compared to BitCrack's capabilities. For instance, a 6800xt can achieve approximately 303 MKeys/sec, while a 6700xt can manage about 215 MKeys/sec with BitCrack.
 
-
-```python3 src/01_measure.py 21``` 
-
-### Example output (21bits):
-
 ```
-python3 src/01_measure.py 21
-Searching 1048576 21bit long private keys for 14oFNXucftsHiUMY8uctg6N487riuyXs4h (1048576, 2097152)
-Total 0:00:48 | 763188 keys | 73 % | 0.016 MKeys/sec
+python3 src/01_measure.py 22
+Searching 2097152 22bit long private keys for 1CfZWK1QTQE3eS9qn61dQjV89KDjZzfNcv (2097152, 4194304)
+Total 0:00:56 | 910351 keys | 43 % | 0.016 MKeys/sec
 --------------------------------
 Congratulations - Private Key found
-Private Key (Decimal): 1811764
-Private Key (HEX): 1ba534
-Private Key (WIF): KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rL6JJvw6XUry
-Public Key (HEX): 031a746c78f72754e0be046186df8a20cdce5c79b2eda76013c647af08d306e49e
-Public Key (BTC Address): 14oFNXucftsHiUMY8uctg6N487riuyXs4h
-Bits: 21
+Private Key (Decimal): 3007503
+Private Key (HEX): 2de40f
+Private Key (WIF): KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rP9Ja2dhtxoh
+Public Key (HEX): 023ed96b524db5ff4fe007ce730366052b7c511dc566227d929070b9ce917abb43
+Public Key (BTC Address): 1CfZWK1QTQE3eS9qn61dQjV89KDjZzfNcv
+Bits: 22
 --------------------------------
 ```
 
@@ -126,34 +121,17 @@ python3 src/01_measure.py 21 1101338
 Searching 1048576 21bit long private keys for 14oFNXucftsHiUMY8uctg6N487riuyXs4h (1101338, 2097152)
 ```
 
-## Approach 3 - Python Parallelization
+## Approach 02 - Python with Parallelization
 
 This approach leverages parallel computing techniques to significantly enhance the speed of the key search process. By distributing the workload across multiple processors or threads, it aims to improve efficiency and reduce the time required to find a matching key.
 
-```
-python3 src/02_parallel.py 22
-```
-
-### Comparison
-
 On my machine, 32 processes were created. The parallel method was 14 times faster than the standard version in solving the 22-bit challenge.
-
-22 Bit challenge:
-
-|Approach|Language|Result| 
-|---|---|---|
-|Parallel imap |Python|0.226 MKeys/sec| 
-|Parallel imap_unordered |Python|0.249 MKeys/sec| 
-|Non-Parallel |Python|0.016 MKeys/sec| 
-
-
-
 
 ```
 python3 src/02_parallel.py 22
 Searching in parallel 2097152 22bit long private keys for 1CfZWK1QTQE3eS9qn61dQjV89KDjZzfNcv (2097152, 4194304)
 Processes: 32
-Total 0:00:05 | 910000 keys | 43 % | 0.226 MKeys/sec
+Total 0:00:03 | 910000 keys | 43 % | 0.329 MKeys/sec
 --------------------------------
 Congratulations - Private Key found
 Private Key (Decimal): 3007503
@@ -165,10 +143,15 @@ Bits: 22
 --------------------------------
 ```
 
+## Approach 03 - Optimized comparison with Python
+
+This version employs a different strategy. The process of converting a private key into a Bitcoin address involves multiple hashing and encoding/decoding steps. Each of these steps requires some time, so minimizing them is beneficial. While these steps are essential for generating the final Bitcoin address, to verify if the outcome is correct, the Bitcoin address can be divided into its RIPEMD and double SHA-256 components before beginning the loop. This allows for a comparison of only the RIPEMD portion, and the SHA-256 computation is performed only if the RIPEMD part is a match.
+
 ```
-python3 src/01_measure.py 22
-Searching 2097152 22bit long private keys for 1CfZWK1QTQE3eS9qn61dQjV89KDjZzfNcv (2097152, 4194304)
-Total 0:00:57 | 910351 keys | 43 % | 0.016 MKeys/sec
+python3 src/03_optimize.py 22
+Searching in parallel and optimized 2097152 22bit long private keys for 1CfZWK1QTQE3eS9qn61dQjV89KDjZzfNcv (2097152, 4194304)
+Processes: 32
+Total 0:00:03 | 910000 keys | 43 % | 0.378 MKeys/sec
 --------------------------------
 Congratulations - Private Key found
 Private Key (Decimal): 3007503
@@ -180,21 +163,27 @@ Bits: 22
 --------------------------------
 ```
 
-
-
-
-
-## (TODO) Approach 4 - C Code simple
+## (TODO) Approach 5 - C Code simple
 
 This method involves implementing the algorithm in C, a low-level programming language known for its speed and efficiency. The simplicity of the code focuses on straightforward implementation without parallelization, offering improved performance over Python-based methods due to the compiled nature of C.
 
-## (TODO) Approach 5 - C Code Parallelization
+## (TODO) Approach 6 - C Code Parallelization
 
 Building on the fourth approach, this method adds parallelization to the C implementation. It utilizes multi-threading or other parallel computing techniques within C to further accelerate the search process by taking advantage of multiple CPU cores.
 
-## (TODO) Approach 6 - Cuda
+## (TODO) Approach 7 - Cuda
 
 This approach employs CUDA (Compute Unified Device Architecture), a parallel computing platform and programming model developed by NVIDIA for general computing on graphical processing units (GPUs). By harnessing the power of GPU acceleration, this method can achieve orders of magnitude higher performance than CPU-based approaches, making it significantly faster at processing massive amounts of data, such as brute-forcing cryptographic keys.
+
+# Performance
+
+22 Bit challenge:
+
+|Approach|Description|Language|MKeys/sec| 
+|---|---|---|---|
+|01|Serial|Python|0.016| 
+|02|Parallel|Python|0.329| 
+|03|Parallel Optimized|Python|0.378| 
 
 # Links
 
