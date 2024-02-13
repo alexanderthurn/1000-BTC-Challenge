@@ -55,9 +55,9 @@ This project is meant to get the concept of the challenge and trying to increase
 
 * It starts with a foundational Python-based approach (Approach 1), which, while easy to understand, is slow! This method is intended to help you to get the basics.
 * The next technique (Approach 2) adds complexity by monitoring computation time and allowing for the continuation of calculations. It also prints out some useful information (WIF key and so on)
-* (TODO) The third technique (Approach 3) leverages parallelization to enhance efficiency.
-* (TODO) Future enhancements include developing a version in C to improve performance.
-* (TODO) Additionally, a GPU-accelerated version is planned to further expedite the computation process.
+* The third technique (Approach 3) leverages parallelization to enhance efficiency.
+* Future enhancements include developing a version in C to improve performance.
+* Additionally, a GPU-accelerated version is planned to further expedite the computation process.
 
 # Quickstart
 
@@ -130,12 +130,24 @@ Searching 1048576 21bit long private keys for 14oFNXucftsHiUMY8uctg6N487riuyXs4h
 
 This approach leverages parallel computing techniques to significantly enhance the speed of the key search process. By distributing the workload across multiple processors or threads, it aims to improve efficiency and reduce the time required to find a matching key.
 
-
 ```
 python3 src/02_parallel.py 22
 ```
 
+### Comparison
+
+On my machine, 32 processes were created. The parallel method was 14 times faster than the standard version in solving the 22-bit challenge.
+
+22 Bit challenge:
+
+|Approach|Result| 
+|---|---|
+|Parallel (Python)|0.226 MKeys/sec| 
+|Non-Parallel (Python)|0.016 MKeys/sec| 
+
+
 ```
+python3 src/02_parallel.py 22
 Searching in parallel 2097152 22bit long private keys for 1CfZWK1QTQE3eS9qn61dQjV89KDjZzfNcv (2097152, 4194304)
 Processes: 32
 Total 0:00:05 | 910000 keys | 43 % | 0.226 MKeys/sec
@@ -149,18 +161,6 @@ Public Key (BTC Address): 1CfZWK1QTQE3eS9qn61dQjV89KDjZzfNcv
 Bits: 22
 --------------------------------
 ```
-
-
-### Comparison
-
-22 Bit challenge:
-
-|Approach|Result| 
-|---|---|
-|Simple Parallel (Python)|0.226 MKeys/sec| 
-|Non-Parallel|0.016 MKeys/sec| 
-
-
 
 ```
 python3 src/01_measure.py 22
