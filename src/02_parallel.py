@@ -60,7 +60,7 @@ except (Exception, KeyboardInterrupt):
     print("")
     print("--------------------------------")
     print("Aborted")
-    print(f"To resume: 'python3 src/01_measure.py {bits} {number}'")
+    print(f"To resume: 'python3 src/02_parallel.py {bits} {number}'")
     rt.stop()
     exit()
 

@@ -87,7 +87,7 @@ except (Exception, KeyboardInterrupt):
     print("")
     print("--------------------------------")
     print("Aborted")
-    print(f"To resume: 'python3 src/01_measure.py {bits} {number}'")
+    print(f"To resume: 'python3 src/03_optimize.py {bits} {number}'")
     exit()
 
 
