@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <time.h>
 #include <unistd.h>
-
+#include "secp256k1.h"
 #include "addresses.h"
 #include "common.h"
 #include "sha2.h"
@@ -33,6 +33,31 @@ void btc_hash(const unsigned char* datain, size_t length, uint256 hashout)
 }
 
 int main() {
+
+ printf("B\n");
+   secp256k1_ecdsa_signature sig;
+   secp256k1_pubkey pubkey;
+   secp256k1_context* ctx = secp256k1_context_create(SECP256K1_CONTEXT_NONE); 
+
+   secp256k1_selftest();
+
+    unsigned char msg_hash[32] = {
+        0x31, 0x5F, 0x5B, 0xDB, 0x76, 0xD0, 0x78, 0xC4,
+        0x3B, 0x8A, 0xC0, 0x06, 0x4E, 0x4A, 0x01, 0x64,
+        0x61, 0x2B, 0x1F, 0xCE, 0x77, 0xC8, 0x69, 0x34,
+        0x5B, 0xFC, 0x94, 0xC7, 0x58, 0x94, 0xED, 0xD3,
+    };
+
+    int is_signature_valid2 = secp256k1_ecdsa_verify(secp256k1_context_static,
+                                                 &sig, msg_hash, &pubkey);
+    printf("IsValid:%d\n", is_signature_valid2);
+
+
+
+
+
+
+
    size_t length = BTC_HASH_LENGTH;
    uint256 hashSHA256;
    uint8_t hashRipeMD[RIPEMD160_DIGEST_LENGTH];
@@ -61,10 +86,31 @@ int main() {
    }
    printf("\n");
 
+
+
+   unsigned char privateKey[32] = {
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01,
+    };
+
+   int genKeyCheck = secp256k1_ec_pubkey_create(ctx,&pubkey,privateKey);
+   unsigned char output[256];
+   size_t olength = 256;
+
+   int convertCheck = secp256k1_ec_pubkey_serialize(ctx, output, &olength, &pubkey, SECP256K1_EC_COMPRESSED);
+
+   printf("IsValid:%d %d %ld\n", genKeyCheck, convertCheck, olength);
+   printf("VerifiyingKey:");
+   for (int n=0;n<olength;n++) {
+      printf("%02x", output[n]);
+   }
+   printf("\n");
+
+
+
    return 0;
-
-
-
    int amount = 100000;
    int sha256amount = amount * 100;
 

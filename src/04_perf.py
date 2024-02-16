@@ -19,7 +19,7 @@ def network_and_ripemd160_to_double_sha256(network_and_ripemd160):
 
 
 
-datain = "ff000102030405060708090001020304050607080900010203040506070809ff"
+datain = "FF000102030405060708090001020304050607080900010203040506070809FF"
 datainBytes = bytearray.fromhex(datain)
 
 sha256result = hashlib.sha256(datainBytes).digest()
@@ -30,6 +30,9 @@ print("In:"+datain)
 print("SHA256:"+sha256result.hex())
 print("RIPEMD:"+ripemd160result.hex())
 
+sk = SigningKey.from_secret_exponent(1, curve=SECP256k1)
+print('VerifyingKey:'+sk.verifying_key.to_string().hex())
+print('VerifyingKeyC:'+sk.verifying_key.to_string('compressed').hex())
 
 exit()
 
