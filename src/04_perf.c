@@ -102,31 +102,44 @@ int main() {
    int convertCheck = secp256k1_ec_pubkey_serialize(ctx, output, &olength, &pubkey, SECP256K1_EC_COMPRESSED);
 
    printf("IsValid:%d %d %ld\n", genKeyCheck, convertCheck, olength);
-   printf("VerifiyingKey:");
+   printf("VerifiyingKeyC:");
    for (int n=0;n<olength;n++) {
       printf("%02x", output[n]);
    }
    printf("\n");
 
-
-
-   return 0;
-   int amount = 100000;
+   // Performance 
+   int amount = 10000;
    int sha256amount = amount * 100;
-
-   printf("Testing %d conversions\n", amount);
+   int ripemd160amount = amount * 100;
+   printf("Performance Test\n");
    struct timespec start, end;
- clock_gettime(CLOCK_MONOTONIC, &start);
-  
+   clock_gettime(CLOCK_MONOTONIC, &start);
    for (int n=0;n<sha256amount;n++) {
-      // int sha256 = number_to_network_and_ripemd160(n);
       sha256_Raw(datain, length, hashSHA256);
    }
-
    clock_gettime(CLOCK_MONOTONIC, &end);
    uint64_t timeElapsed = timespecDiff(&end, &start);
-   printf("Simple SHA256 x100: %.5f\n", timeElapsed/(float)1000000000);
+   printf("SHA256 %d: %.5f\n", sha256amount, timeElapsed/(float)1000000000);
 
+   clock_gettime(CLOCK_MONOTONIC, &start);
+   for (int n=0;n<ripemd160amount;n++) {
+      ripemd160(datain, BTC_HASH_LENGTH, hashRipeMD);
+   }
+   clock_gettime(CLOCK_MONOTONIC, &end);
+   timeElapsed = timespecDiff(&end, &start);
+   printf("RipeMD %d: %.5f\n", ripemd160amount, timeElapsed/(float)1000000000);
+
+   clock_gettime(CLOCK_MONOTONIC, &start);
+   for (int n=0;n<amount;n++) {
+      int genKeyCheck = secp256k1_ec_pubkey_create(ctx,&pubkey,privateKey);
+      secp256k1_ec_pubkey_serialize(ctx, output, &olength, &pubkey, SECP256K1_EC_COMPRESSED);
+   }
+   clock_gettime(CLOCK_MONOTONIC, &end);
+   timeElapsed = timespecDiff(&end, &start);
+   printf("Secp256k1 %d: %.5f\n", amount, timeElapsed/(float)1000000000);
+
+   return 0;
 
 
 

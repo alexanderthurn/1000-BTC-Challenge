@@ -164,20 +164,22 @@ Bits: 22
 --------------------------------
 ```
 
-## Approach 5 - C Code simple
+## Approach 5 - C vs Python
 
 This method involves implementing the algorithm in C, a low-level programming language known for its speed and efficiency. The simplicity of the code focuses on straightforward implementation without parallelization, offering improved performance over Python-based methods due to the compiled nature of C.
 
-Prerequisites: Make sure you have gcc. Should be preinstalled on bash/wsh. For Windows: Install gcc with Cygwin [cygwin](https://sourceware.org/cygwin/)
+* Prerequisites: Make sure you have gcc. Should be preinstalled on bash/wsh. For Windows: Install gcc with Cygwin [cygwin](https://sourceware.org/cygwin/)
+* Optional if gcc throws errors: Install secp256k1 and copy library (.a or .so) to src/c/secp256k1/ from https://github.com/bitcoin-core/secp256k1/   (unix2dos can help on windows)
 
-Bash:
+C:
 ```
-gcc src/04_simple.c src/c/addresses.c src/c/common.c -I src/c -o out/04_simple && out/04_simple
+gcc src/04_perf.c src/c/addresses.c src/c/common.c src/c/sha2.c src/c/memzero.c src/c/ripemd160.c -I src/c -I src/c/secp256k1/include -Lsrc/c/secp256k1/.libs -l:libsecp256k1.a -o out/04_perf -O2 && out/04_perf
 ```
+vs
 
-Windows:
+Python:
 ```
-gcc src\04_simple.c src\c\addresses.c src\c\common.c -I src\c -o out\04_simple && out\04_simple
+python3 src/04_perf.py
 ```
 
 ## (TODO) Approach 6 - C Code Parallelization
