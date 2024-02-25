@@ -17,7 +17,7 @@ But how is it done? How can one obtain the private key for a known address? This
 
 ## History
 
-* 15.01.2025: a transaction was created containing a transfer transaction for 256 different Bitcoin addresses.
+* 15.01.2015: a transaction was created containing a transfer transaction for 256 different Bitcoin addresses.
 * 11.07.2017: funds from addresses #161—256 were moved to the same number of addresses of the lower range – thus increasing the amount of funds on them.
 * 31.05.2019: the creator of the "puzzles" creates outgoing transactions with the value of 1000 satoshi for addresses #65, #70, #75, #80, #85, #90, #95, #100, #105, #110, #115, #120, #125, #130, #135, #140, #145, #150, #155, #160 with the aim of probably comparing the difficulty of finding a private key for the address from which such a transaction was carried out, and one that there is no transaction.
 * 16.04.2023: somebody (maybe the owner) increased the unsolved puzzles prizes again by x10. Now the puzzle #66 prize is 6.6 BTC, #67 is 6.7 BTC and so on... puzzle #160 prize is 16 BTC.
