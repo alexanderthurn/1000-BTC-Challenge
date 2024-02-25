@@ -17,7 +17,7 @@ But how is it done? How can one obtain the private key for a known address? This
 
 ## History
 
-* 15.01.2025: a transaction was created containing a transfer transaction for 256 different Bitcoin addresses.
+* 15.01.2015: a transaction was created containing a transfer transaction for 256 different Bitcoin addresses.
 * 11.07.2017: funds from addresses #161—256 were moved to the same number of addresses of the lower range – thus increasing the amount of funds on them.
 * 31.05.2019: the creator of the "puzzles" creates outgoing transactions with the value of 1000 satoshi for addresses #65, #70, #75, #80, #85, #90, #95, #100, #105, #110, #115, #120, #125, #130, #135, #140, #145, #150, #155, #160 with the aim of probably comparing the difficulty of finding a private key for the address from which such a transaction was carried out, and one that there is no transaction.
 * 16.04.2023: somebody (maybe the owner) increased the unsolved puzzles prizes again by x10. Now the puzzle #66 prize is 6.6 BTC, #67 is 6.7 BTC and so on... puzzle #160 prize is 16 BTC.
@@ -61,6 +61,39 @@ This project is meant to get the concept of the challenge and trying to increase
 * Additionally, a GPU-accelerated version is planned to further expedite the computation process. Python CUDA and C Cuda is on the list
 
 # Quickstart
+
+## The Mathematics Behind Deriving a Bitcoin Address from a Private Key
+
+To write code that solves this puzzle, the first step is to understand the mathematical fundamentals. The following steps are undertaken to derive a Bitcoin address from a private key (simplified to clarify the concepts):
+
+FOR a=1 TO 2^256:
+1. Ensure that a is in its 256-bit representation.
+2. `b = SECP256k1(a)`
+3. `c = SHA256(b)`
+4. `d = RIPEMD160(c)`
+5. `e = '\x00' + d`
+6. `f = SHA256(SHA256(e))`
+7. `g = BASE58_ENCODE(f + the first 4 bytes of SHA256(SHA256(e)))`
+
+### SECP256k1
+
+SECP256k1 refers to the parameters of the elliptic curve used for Bitcoin keys. This specific curve has properties that make it particularly secure for cryptography, such as a large order of the base point group and high resistance to the most known attacks on elliptic curves. Applying SECP256k1 to the private key (a) transforms it into a public key (b) by multiplying it by the curve's generator point.
+
+### SHA256
+
+SHA256 is a cryptographic hash function that takes any input and produces a fixed 256-bit hash. It is part of the SHA-2 family and is used in many security applications and protocols, including Bitcoin, due to its high security and resistance to hash collisions. In this process, SHA256 is used to hash the public key and to generate the checksum for the Bitcoin address.
+
+### RIPEMD160
+
+RIPEMD160 is another cryptographic hash function that produces a 160-bit hash value. It is used after applying SHA256 to the public key to reduce the length of the hash and add an additional layer of encryption. This contributes to the anonymity and security of the Bitcoin address.
+
+### BASE58
+
+Base58 is an encoding format used to convert the binary Bitcoin addresses into an alphanumeric string that is easier to read and share. Unlike Base64, Base58 omits confusing characters like '0' (zero), 'O' (uppercase o), 'I' (uppercase i), and 'l' (lowercase L), as well as the characters '+' and '/', to improve readability. The final Bitcoin address is produced by adding the first four bytes of the double SHA256 checksum of (e) to the end of (f) before the Base58 encoding, to minimize transmission errors of the address.
+
+By applying these methods, a Bitcoin address is progressively generated from a private key, which can be used for transactions on the Bitcoin network.
+
+
 
 ## Approach 00 - Understandable code
 
