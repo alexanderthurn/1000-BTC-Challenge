@@ -51,9 +51,10 @@ If you're considering tackling this challenge independently, be aware that it co
 
 # Using this project
 
-This project is meant to get the concept of the challenge and trying to increase the performance step by step. It incorporates a variety of techniques:
+This project is meant to get the concept of the challenge and trying to increase the performance step by step by using parallelization, optimizations and then switching to c-code and a gpu based variant. It incorporates a variety of techniques:
 
-* It starts with a foundational Python-based approach (Approach 00), which, while easy to understand, is slow! This method is intended to help you to get the basics.
+* First you get to know some mathematics
+* It then starts with a foundational Python-based approach (Approach 00), which, while easy to understand, is slow! This method is intended to help you to get the basics and see the mathematics in code
 * The next technique (Approach 01) adds complexity by monitoring computation time and allowing for the continuation of calculations. It also prints out some useful information (WIF key and so on)
 * The next technique (Approach 02) leverages parallelization to enhance efficiency.
 * The next one (Approach 03) optimizes the comparison method, splitting components by RIPEMD and SHA256
@@ -64,7 +65,7 @@ This project is meant to get the concept of the challenge and trying to increase
 
 ## The Mathematics Behind Deriving a Bitcoin Address from a Private Key
 
-To write code that solves this puzzle, the first step is to understand the mathematical fundamentals. The following steps are undertaken to derive a Bitcoin address from a private key (simplified to clarify the concepts):
+To write code that solves this puzzle, the first step is to understand the mathematical fundamentals. The following steps are undertaken to derive a Bitcoin address (g) from a private key (a):
 
 FOR a=1 TO 2^256:
 1. Ensure that a is in its 256-bit representation.
@@ -73,7 +74,9 @@ FOR a=1 TO 2^256:
 4. `d = RIPEMD160(c)`
 5. `e = '\x00' + d`
 6. `f = SHA256(SHA256(e))`
-7. `g = BASE58_ENCODE(f + the first 4 bytes of SHA256(SHA256(e)))`
+7. `g = BASE58_ENCODE(e + the first 4 bytes of f)`
+
+g is the generated Bitcoin address, which can then be compared with a known address. A Bitcoin address can be viewed in a block explorer and looks like '1BgGZ9tcN4rm9KBzDn7KprQz87SZ26SAMH'.
 
 ### SECP256k1
 
@@ -91,13 +94,12 @@ RIPEMD160 is another cryptographic hash function that produces a 160-bit hash va
 
 Base58 is an encoding format used to convert the binary Bitcoin addresses into an alphanumeric string that is easier to read and share. Unlike Base64, Base58 omits confusing characters like '0' (zero), 'O' (uppercase o), 'I' (uppercase i), and 'l' (lowercase L), as well as the characters '+' and '/', to improve readability. The final Bitcoin address is produced by adding the first four bytes of the double SHA256 checksum of (e) to the end of (f) before the Base58 encoding, to minimize transmission errors of the address.
 
-By applying these methods, a Bitcoin address is progressively generated from a private key, which can be used for transactions on the Bitcoin network.
-
+By applying these methods, a Bitcoin address is progressively generated from a private key, which can be used for transactions on the Bitcoin network. A very good source to learn more about it is this article [Generate BTC Private Key Explanation](https://groups.google.com/g/comp.lang.c/c/fbLnwQRBcPU?pli=1)
 
 
 ## Approach 00 - Understandable code
 
-The first approach stands as the simplest among the methods employed. It serves as an excellent starting point and is configured by default to solve the 17-bit challenge, provided there are no modifications to the code in line 45. Read the code and try to understand its used libraries. I know it is tough, as there are several methods used, but it is worth to use the time understand the concept. A very good source is also this article [Generate BTC Private Key Explanation](https://groups.google.com/g/comp.lang.c/c/fbLnwQRBcPU?pli=1)
+The first approach stands as the simplest among the methods employed. It serves as an excellent starting point and is configured by default to solve the 17-bit challenge, provided there are no modifications to the code in line 45. Read the code and try to understand its used libraries. I know it is tough, as there are several methods used, but it is worth to use the time understand the concept and get familiar with the code.
 
 1. Install [Python 3](https://www.python.org/downloads/)
 2. Then:
